@@ -9,6 +9,8 @@ Automatically export your [Glasp](https://glasp.co) highlights to your favorite 
 | Airtable | ✅ Available | [Setup →](#airtable) |
 | Notion | ✅ Available | [Setup →](#notion) |
 
+> 📖 **New to this?** Read the [step-by-step tutorial](https://glasp.co/posts/how-to-export-glasp-highlights-with-github-actions) to get started.
+
 > Want a destination added? [Open an issue](../../issues) and let us know!
 
 ---
