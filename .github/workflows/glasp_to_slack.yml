@@ -12,6 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check required secrets
+        run: |
+          if [ -z "${{ secrets.GLASP_ACCESS_TOKEN }}" ] || [ -z "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            echo "⚠️ Secrets not configured yet. Skipping workflow."
+            echo "👉 See README for setup instructions."
+            exit 0
+          fi
+          echo "✅ Secrets confirmed. Proceeding."
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
