@@ -1,0 +1,43 @@
+name: "Glasp → Google Sheets"
+
+on:
+  schedule:
+    - cron: "0 9 * * *"   # Daily at 09:00 UTC – change to your preferred time
+  workflow_dispatch:       # Allow manual trigger from Actions tab
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required secrets
+        run: |
+          if [ -z "${{ secrets.GLASP_ACCESS_TOKEN }}" ] || \
+             [ -z "${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}" ] || \
+             [ -z "${{ secrets.GOOGLE_SHEET_ID }}" ]; then
+            echo "⚠️ Secrets not configured yet. Skipping workflow."
+            echo "👉 See README for setup instructions."
+            exit 0
+          fi
+          echo "✅ Secrets found. Proceeding."
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests cryptography
+
+      - name: Run Glasp → Google Sheets
+        env:
+          GLASP_ACCESS_TOKEN: ${{ secrets.GLASP_ACCESS_TOKEN }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          PYTHONPATH: scripts
+          # ── Optional configuration ──
+          # LOOKBACK_HOURS: "24"    # How far back to fetch (default: 24)
+          # SHEET_TAB: "Highlights" # Sheet tab name (default: Highlights)
+        run: python scripts/glasp_to_sheets.py
